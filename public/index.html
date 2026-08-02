@@ -8,16 +8,16 @@
 </head>
 <body>
 <header class="hero">
-  <nav><div class="brand"><span class="brandMark">R</span> 雇員雷達 <em>繁中服</em></div><div class="pulse"><i></i>每 12 小時更新</div></nav>
+  <nav><div class="brand"><span class="brandMark">R</span> 雷達中心 <em>繁中服</em></div><div class="radar-nav" id="sections"><button class="active" data-section="retainer">雇員雷達</button><button data-section="craft">生產雷達</button></div><div class="pulse"><i></i>每 12 小時更新</div></nav>
   <div class="headline"><p class="eyebrow">MARKET INTELLIGENCE</p><h1>別追最高價。<br><span>追真正賣得掉的收益。</span></h1><p class="lead">結合成本、30 天成交、價格波動與庫存壓力，找出現在最值得採集或製作的物品。</p></div>
   <section class="controls">
     <label>交易世界<select id="world"></select></label>
-    <label id="stat-control"><span id="stat-label">鑑別力</span><input id="stat" type="number" value="5238"><small id="stat-help">用來判定採集雇員帶回量（不是獲得力）</small></label>
+    <label id="gather-control">獲得力<input id="gathering" type="number" value="3681"><small>決定能否派遣該採集物品</small></label>
+    <label id="stat-control"><span id="stat-label">鑑別力</span><input id="stat" type="number" value="2987"><small id="stat-help">決定每趟實際帶回數量</small></label>
     <label id="level-control" hidden>最高配方等級<input id="craft-level" type="number" min="80" max="100" value="100"><small>目前分析 Lv80–100 可交易配方</small></label>
   </section>
 </header>
 <main>
-  <div class="section-switch" id="sections"><button class="active" data-section="retainer">雇員採集排行</button><button data-section="craft">生產職業排行</button></div>
   <div class="toolbar"><div class="tabs" id="jobs"></div><div class="switch" id="modes"><button class="active" data-mode="stable">最穩定收益</button><button data-mode="gross">最高收益</button></div></div>
   <div id="craft-note" class="notice" hidden>成本採用目前 NQ 原料最低掛單價並包含碎晶／水晶；收入已扣除 5% 市場手續費。HQ 排名假設你能穩定製作 HQ 成品。</div>
   <div id="status" class="state"><span class="loader"></span>讀取市場排行中…</div>
