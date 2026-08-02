@@ -135,7 +135,7 @@ def build_world(world_id, world_name, recipes, marketable):
                 continue
             inventory_factor = 1 / (1 + metric["stockDays"] / 30) if metric["stockDays"] is not None else 0
             risk_profit = profit * metric["saleRatio"] * (1 / (1 + metric["cv"])) * inventory_factor
-            row = {**{key: recipe[key] for key in ("recipeId", "job", "level", "result", "name", "yields", "craftsmanshipReq", "controlReq", "masterbook")},
+            row = {**{key: recipe[key] for key in ("recipeId", "job", "level", "result", "name", "yields", "craftsmanshipReq", "craftsmanshipHardReq", "craftsmanshipSuggested", "controlReq", "masterbook")},
                    **metric, "referencePrice": reference, "materialCost": material_cost,
                    "netRevenue": round(revenue, 2), "netProfit": round(profit, 2),
                    "profitMargin": round(profit / revenue, 6), "riskProfit": round(risk_profit, 2),
