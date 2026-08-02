@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>雇員雷達｜FFXIV 繁中服</title>
+  <meta name="description" content="每 12 小時更新的 Lv100 雇員市場收益排行">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="hero">
+  <nav><div class="brand"><span>R</span> 雇員雷達 <em>繁中服</em></div><div class="pulse"><i></i>每 12 小時更新</div></nav>
+  <div class="headline"><p>RETAINER MARKET INTELLIGENCE</p><h1>別追最高價。<br><b>追真正賣得掉的收益。</b></h1><div>結合 30 天成交、波動與庫存壓力，替 Lv100 雇員找出現在最值得派的物品。</div></div>
+  <section class="controls">
+    <label>交易世界<select id="world"></select></label>
+    <label><span id="stat-label">感知力</span><input id="stat" type="number" value="5238"><small id="stat-help">用來判定採集雇員帶回量（不是獲得力）</small></label>
+  </section>
+</header>
+<main>
+  <div class="toolbar"><div class="tabs" id="jobs"><button data-job="戰鬥">戰鬥雇員</button><button data-job="採礦">採礦雇員</button><button class="active" data-job="園藝">園藝雇員</button></div><div class="switch" id="modes"><button class="active" data-mode="stable">最穩定收益</button><button data-mode="gross">最高毛收益</button></div></div>
+  <div id="status" class="state"><span class="loader"></span>讀取市場排行中…</div>
+  <section id="results" hidden>
+    <article class="winner"><div class="rank">今日首選<b>01</b></div><div class="winner-name"><span id="winner-job"></span><h2 id="winner-name"></h2><p id="winner-detail"></p></div><div class="winner-stats"><div><span>每趟毛收益</span><b id="winner-gross"></b></div><div><span>風險調整收益</span><b id="winner-risk"></b></div></div></article>
+    <div class="table-wrap"><table><thead><tr><th>排名 / 物品</th><th>帶回量</th><th>30日中位價</th><th>日均成交</th><th>成交天數</th><th>價格 CV</th><th>最低價 / 庫存</th><th>庫存天數</th><th>每趟毛收益</th><th>風險調整</th></tr></thead><tbody id="ranking"></tbody></table></div>
+  </section>
+  <footer><div><b>計算方式</b><p>參考價 = min（30 日 NQ 成交中位數、目前 NQ 最低價）。風險調整收益 = 每趟毛收益 × 成交天數比例 × 1/(1+價格 CV) × 1/(1+庫存天數/30)。排除 30 日成交少於 20 件、成交天數低於 30% 的物品。</p><small>非 Square Enix 或 FFXIV_Market 官方網站。資料來源：Universalis、FFXIV_Market。</small></div><div class="updated"><span>資料產生時間</span><b id="updated">—</b><small>GitHub Actions · 每 12 小時</small></div></footer>
+</main>
+<script src="app.js"></script>
+</body></html>
