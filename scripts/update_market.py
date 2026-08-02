@@ -17,6 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 API = "https://universalis.app/api/v2"
 WINDOW_DAYS = 30
 WINDOW_SECONDS = WINDOW_DAYS * 86400
+RECENT_DAYS = 7
+RECENT_SECONDS = RECENT_DAYS * 86400
 WORLD_NAMES = ["伊弗利特", "迦樓羅", "利維坦", "鳳凰", "奧汀", "巴哈姆特", "拉姆", "泰坦"]
 UA = "retainer-radar-tw/1.0 (GitHub Pages market analysis)"
 
@@ -44,6 +46,47 @@ def unpack(payload):
     if payload.get("itemID"):
         return {int(payload["itemID"]): payload}
     return {}
+
+
+def weighted_quantile(entries, quantile: float, transform=lambda value: value):
+    values = sorted((transform(int(entry["pricePerUnit"])), max(1, int(entry.get("quantity", 1))))
+                    for entry in entries if int(entry.get("pricePerUnit", 0)) > 0)
+    if not values:
+        return 0
+    target = sum(weight for _, weight in values) * quantile
+    cumulative = 0
+    for value, weight in values:
+        cumulative += weight
+        if cumulative >= target:
+            return value
+    return values[-1][0]
+
+
+def market_metrics(entries, listings, now):
+    recent_since = now - RECENT_SECONDS
+    recent_entries = [entry for entry in entries if int(entry.get("timestamp", 0)) >= recent_since]
+    units = sum(int(entry.get("quantity", 0)) for entry in entries)
+    recent_units = sum(int(entry.get("quantity", 0)) for entry in recent_entries)
+    daily = units / WINDOW_DAYS
+    recent_daily = recent_units / RECENT_DAYS
+    demand_daily = (daily + recent_daily) / 2
+    sale_days = len({datetime.fromtimestamp(int(entry["timestamp"]), timezone.utc).date() for entry in entries})
+    median = weighted_quantile(entries, .5)
+    recent_median = weighted_quantile(recent_entries, .5)
+    mad = weighted_quantile(entries, .5, lambda price: abs(price - median)) if median else 0
+    robust_cv = 1.4826 * mad / median if median else 0
+    lowest = min((int(x["pricePerUnit"]) for x in listings if int(x.get("pricePerUnit", 0)) > 0), default=0)
+    stock = sum(int(x.get("quantity", 0)) for x in listings)
+    sale_ratio = min(1, sale_days / WINDOW_DAYS)
+    trend = min(1, max(.6, recent_daily / daily)) if daily else 0
+    confidence = min(1, math.sqrt(units / 100))
+    return {"median": median, "recentMedian": recent_median, "daily": round(daily, 4),
+            "recentDaily": round(recent_daily, 4), "demandDaily": round(demand_daily, 4),
+            "units": units, "recentUnits": recent_units, "saleDays": sale_days,
+            "saleRatio": round(sale_ratio, 6), "cv": round(robust_cv, 6),
+            "trend": round(trend, 6), "confidence": round(confidence, 6),
+            "lowest": lowest, "stock": stock,
+            "stockDays": round(stock / demand_daily, 4) if demand_daily else None}
 
 
 def fetch_batch(world_id: int, item_ids: list[int]):
@@ -81,21 +124,10 @@ def build_world(world_id: int, world_name: str, catalog: list[dict]):
                    if not entry.get("hq", False) and since <= int(entry.get("timestamp", 0)) <= now]
         listings = [listing for listing in currents.get(task["id"], {}).get("listings", [])
                     if not listing.get("hq", False)]
-        prices = sorted(int(entry["pricePerUnit"]) for entry in entries if int(entry.get("pricePerUnit", 0)) > 0)
-        units = sum(int(entry.get("quantity", 0)) for entry in entries)
-        sale_days = len({datetime.fromtimestamp(int(entry["timestamp"]), timezone.utc).date() for entry in entries})
-        median = statistics.median(prices) if prices else 0
-        mean = statistics.fmean(prices) if prices else 0
-        cv = statistics.pstdev(prices) / mean if len(prices) > 1 and mean else 0
-        lowest = min((int(x["pricePerUnit"]) for x in listings if int(x.get("pricePerUnit", 0)) > 0), default=0)
-        stock = sum(int(x.get("quantity", 0)) for x in listings)
-        daily = units / WINDOW_DAYS
-        sale_ratio = min(1, sale_days / WINDOW_DAYS)
-        if units < 20 or sale_ratio < .30 or not (median or lowest):
+        metrics = market_metrics(entries, listings, now)
+        if metrics["units"] < 20 or metrics["saleRatio"] < .30 or not (metrics["median"] or metrics["lowest"]):
             continue
-        rows.append({**task, "median": median, "daily": round(daily, 4), "units": units,
-                     "saleDays": sale_days, "saleRatio": round(sale_ratio, 6), "cv": round(cv, 6),
-                     "lowest": lowest, "stock": stock, "stockDays": round(stock / daily, 4) if daily else None})
+        rows.append({**task, **metrics})
 
     payload = {"world": world_id, "worldName": world_name, "generatedAt": datetime.now(timezone.utc).isoformat(),
                "windowDays": WINDOW_DAYS, "quality": "NQ", "dataAvailable": bool(rows), "rows": rows}
