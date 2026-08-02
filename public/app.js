@@ -6,6 +6,7 @@ const escapeHtml=value=>String(value).replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&
 const iconUrl=path=>path?`https://xivapi.com${path}`:"";
 const itemIcon=row=>row.icon?`<img class="item-icon" src="${iconUrl(row.icon)}" alt="" loading="lazy" onerror="this.hidden=true">`:"";
 const craftNeed=row=>Number(row.craftsmanshipReq||row.craftsmanshipSuggested||row.craftsmanshipHardReq||0);
+function updateCountdown(){const now=new Date();const next=new Date(now);next.setMinutes(60,0,0);const seconds=Math.max(0,Math.floor((next-now)/1000));const hh=String(Math.floor(seconds/3600)).padStart(2,"0"),mm=String(Math.floor(seconds%3600/60)).padStart(2,"0"),ss=String(seconds%60).padStart(2,"0");$("update-countdown").textContent=`更新倒數 ${hh}:${mm}:${ss}`}
 
 function setWinnerIcon(row){const image=$("winner-icon");image.src=iconUrl(row.icon);image.hidden=!row.icon;image.onerror=()=>{image.hidden=true}}
 function yieldFor(row,stat){const tiers=row.quantities.filter(q=>(q.value||0)<=stat);return(tiers.at(-1)||row.quantities[0]||{quantity:1}).quantity}
@@ -43,4 +44,5 @@ async function init(){let worlds=worldsFallback;try{const response=await fetch(`
 const loadWorldData=loadWorld;
 loadWorld=async function(){await loadWorldData();applyProfitDefaults();render()};
 init();
+updateCountdown();setInterval(updateCountdown,1000);
 document.addEventListener("click",event=>{if(event.target.closest("#jobs button,#modes button"))setTimeout(()=>{applyProfitDefaults();render()},0)});
