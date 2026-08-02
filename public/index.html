@@ -14,8 +14,8 @@
     <label id="gather-control">獲得力<input id="gathering" type="number" value="3681"><small>決定能否派遣該採集物品</small></label>
     <label id="stat-control"><span id="stat-label">鑑別力</span><input id="stat" type="number" value="2987"><small id="stat-help">決定每趟實際帶回數量</small></label>
     <label id="level-control" hidden>最高配方等級<input id="craft-level" type="number" min="1" max="100" value="100"><small>分析 Lv1–100，包含所有秘笈配方</small></label>
-    <label id="craftsmanship-control" hidden>作業精度<input id="craftsmanship" type="number" min="0" value="0"><small>排除低於建議作業精度的配方</small></label>
-    <label id="control-control" hidden>加工精度<input id="control" type="number" min="0" value="0"><small>排除未達硬性加工門檻的配方</small></label>
+    <label id="craftsmanship-control" hidden>作業精度<input id="craftsmanship" type="number" min="0" value="0"><small id="craftsmanship-help">自動採用目前首選配方的最低門檻</small></label>
+    <label id="control-control" hidden>加工精度<input id="control" type="number" min="0" value="0"><small id="control-help">自動採用目前首選配方的最低門檻</small></label>
   </section>
 </header>
 <main>
@@ -28,5 +28,5 @@
   </section>
   <footer><div><b>計算方式</b><p id="formula"></p><small>非 Square Enix 官方網站。資料來源：Universalis。</small></div><div class="updated"><span>資料產生時間</span><b id="updated">—</b><small>GitHub Actions · 每 12 小時</small><div class="author">作者　遊戲名稱：李東海<br>伺服器：伊弗利特</div></div></footer>
 </main>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body></html>
