@@ -1,13 +1,12 @@
-name: Deploy website changes
+name: Update market data and deploy Pages
 
 on:
+  schedule:
+    - cron: "0 * * * *"
   push:
     branches: [main]
     paths:
-      - "public/index.html"
-      - "public/styles.css"
-      - "public/app.js"
-      - "public/assets/**"
+      - "scripts/**"
   workflow_dispatch:
 
 permissions:
@@ -24,6 +23,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Analyze all Traditional Chinese worlds
+        run: python scripts/update_market.py
+      - name: Analyze crafting profitability
+        run: python scripts/update_crafting.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
