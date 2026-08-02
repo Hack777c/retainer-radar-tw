@@ -14,7 +14,9 @@
     <label>交易世界<select id="world"></select></label>
     <label id="gather-control">獲得力<input id="gathering" type="number" value="3681"><small>決定能否派遣該採集物品</small></label>
     <label id="stat-control"><span id="stat-label">鑑別力</span><input id="stat" type="number" value="2987"><small id="stat-help">決定每趟實際帶回數量</small></label>
-    <label id="level-control" hidden>最高配方等級<input id="craft-level" type="number" min="80" max="100" value="100"><small>目前分析 Lv80–100 可交易配方</small></label>
+    <label id="level-control" hidden>最高配方等級<input id="craft-level" type="number" min="1" max="100" value="100"><small>分析 Lv1–100，包含所有秘笈配方</small></label>
+    <label id="craftsmanship-control" hidden>作業精度<input id="craftsmanship" type="number" min="0" value="0"><small>排除作業精度門檻不足的配方</small></label>
+    <label id="control-control" hidden>加工精度<input id="control" type="number" min="0" value="0"><small>排除加工精度門檻不足的配方</small></label>
   </section>
 </header>
 <main>

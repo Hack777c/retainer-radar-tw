@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import argparse
 import math
 import statistics
 import time
@@ -104,6 +105,9 @@ def build_world(world_id: int, world_name: str, catalog: list[dict]):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--world", choices=WORLD_NAMES, help="Analyze one world for local validation")
+    args = parser.parse_args()
     catalog = json.loads((ROOT / "scripts" / "catalog.json").read_text(encoding="utf-8"))
     worlds = fetch_json(f"{API}/worlds")
     world_map = {world["name"]: int(world["id"]) for world in worlds if world.get("name") in WORLD_NAMES}
@@ -114,7 +118,7 @@ def main():
     (ROOT / "public" / "data" / "worlds.json").write_text(
         json.dumps([{"id": world_map[name], "name": name} for name in WORLD_NAMES], ensure_ascii=False), encoding="utf-8")
     print("Universalis TW worlds: " + ", ".join(f"{name}={world_map[name]}" for name in WORLD_NAMES))
-    for name in WORLD_NAMES:
+    for name in ([args.world] if args.world else WORLD_NAMES):
         build_world(world_map[name], name, catalog)
 
 
