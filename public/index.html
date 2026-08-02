@@ -5,7 +5,7 @@
   <title>雇員雷達｜FFXIV 繁中服</title>
   <meta name="description" content="每小時整點更新的 FFXIV 繁中服雇員採集與生產職業市場收益排行">
   <link rel="icon" type="image/png" href="assets/ffxiv-mark.png">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
 <header class="hero">
@@ -21,7 +21,7 @@
 </header>
 <main>
   <div class="toolbar"><div class="tabs" id="jobs"></div><div class="switch" id="modes"><button class="active" data-mode="stable">最穩定收益</button><button data-mode="gross">最高收益</button></div></div>
-  <div id="craft-note" class="notice" hidden>成本採用目前 NQ 原料最低掛單價並包含碎晶／水晶；收入已扣除 5% 市場手續費。HQ 排名假設你能穩定製作 HQ 成品。</div>
+  <div id="craft-note" class="notice" hidden>成本採用購足實際配方數量所需的 NQ 原料掛單深度價，並包含碎晶／水晶；收入已扣除 5% 市場手續費。HQ 排名假設你能穩定製作 HQ 成品。</div>
   <div id="status" class="state"><span class="loader"></span>讀取市場排行中…</div>
   <section id="results" hidden>
     <article class="winner"><div class="rank">今日首選<b>01</b></div><img id="winner-icon" class="winner-icon" alt=""><div class="winner-name"><span id="winner-job"></span><h2 id="winner-name"></h2><p id="winner-detail"></p></div><div class="winner-stats"><div><span id="winner-gross-label">每趟毛收益</span><b id="winner-gross"></b></div><div><span id="winner-risk-label">風險調整收益</span><b id="winner-risk"></b></div></div></article>
@@ -29,5 +29,5 @@
   </section>
   <footer><div><b>計算方式</b><p id="formula"></p><small>非 Square Enix 官方網站。資料來源：Universalis。</small></div><div class="updated"><span>資料產生時間</span><b id="updated">—</b><small>GitHub Actions · 每小時整點更新</small><div class="author">作者　遊戲名稱：李東海<br>伺服器：伊弗利特</div></div></footer>
 </main>
-<script src="app.js?v=9"></script>
+<script src="app.js?v=10"></script>
 </body></html>
