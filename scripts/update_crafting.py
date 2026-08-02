@@ -155,11 +155,18 @@ def build_world(world_id, world_name, recipes, marketable):
         components = []
         unavailable = False
         material_cost = 0
+        ingredient_depth_crafts = None
         for ingredient in recipe["ingredients"]:
-            subtotal = listing_depth_cost(ingredient_listings.get(ingredient["id"], []), ingredient["amount"])
+            listings = ingredient_listings.get(ingredient["id"], [])
+            subtotal = listing_depth_cost(listings, ingredient["amount"])
             if subtotal is None:
                 unavailable = True
                 break
+            available = sum(int(row.get("quantity", 0)) for row in listings
+                            if int(row.get("pricePerUnit", 0)) > 0)
+            available_crafts = available // ingredient["amount"]
+            ingredient_depth_crafts = (available_crafts if ingredient_depth_crafts is None
+                                       else min(ingredient_depth_crafts, available_crafts))
             unit_price = subtotal / ingredient["amount"]
             material_cost += subtotal
             components.append({"id": ingredient["id"], "name": ingredient["name"], "amount": ingredient["amount"],
@@ -179,19 +186,45 @@ def build_world(world_id, world_name, recipes, marketable):
                 continue
             demand_factor = math.sqrt(min(1, metric["demandDaily"] / max(1, recipe["yields"])))
             inventory_factor = 1 / (1 + metric["stockDays"] / 7) if metric["stockDays"] is not None else 0
+            has_listing = metric["lowest"] > 0 and metric["stock"] > 0
+            listing_factor = (.35 if not has_listing else
+                              .7 if metric["stock"] < recipe["yields"] else 1)
             consistency_factor = .7 + .3 * metric["saleRatio"]
             margin_factor = min(1, max(.25, (profit / revenue) / .25))
-            weekly_units = min(recipe["yields"], metric["demandDaily"] * 7)
-            weekly_profit = max(0, (reference * .95 - material_cost / recipe["yields"]) * weekly_units)
+            weekly_target_units = metric["demandDaily"] * 7
+            weekly_crafts_needed = (math.ceil(weekly_target_units / recipe["yields"])
+                                    if weekly_target_units else 0)
+            weekly_crafts = min(ingredient_depth_crafts or 0, weekly_crafts_needed)
+            weekly_produced_units = weekly_crafts * recipe["yields"]
+            weekly_units = min(weekly_target_units, weekly_produced_units)
+            weekly_material_cost = 0
+            if weekly_crafts:
+                for ingredient in recipe["ingredients"]:
+                    depth_cost = listing_depth_cost(ingredient_listings.get(ingredient["id"], []),
+                                                    ingredient["amount"] * weekly_crafts)
+                    if depth_cost is None:
+                        weekly_material_cost = 0
+                        weekly_crafts = 0
+                        weekly_produced_units = 0
+                        weekly_units = 0
+                        break
+                    weekly_material_cost += depth_cost
+            weekly_unit_cost = (weekly_material_cost / weekly_produced_units
+                                if weekly_produced_units else 0)
+            weekly_profit = max(0, (reference * .95 - weekly_unit_cost) * weekly_units)
             risk_profit = (weekly_profit * demand_factor * consistency_factor *
                            (1 / (1 + metric["cv"])) * inventory_factor *
-                           metric["trend"] * metric["confidence"] * margin_factor)
+                           metric["trend"] * metric["confidence"] * margin_factor * listing_factor)
             clear_days = ((metric["stock"] + recipe["yields"]) / metric["demandDaily"]
                           if metric["demandDaily"] else None)
             row = {**{key: recipe[key] for key in ("recipeId", "job", "level", "result", "name", "icon", "yields", "craftsmanshipReq", "craftsmanshipHardReq", "craftsmanshipSuggested", "controlReq", "masterbook")},
                    **metric, "referencePrice": reference, "materialCost": material_cost,
                    "netRevenue": round(revenue, 2), "netProfit": round(profit, 2),
                    "profitMargin": round(profit / revenue, 6), "weeklyProfit": round(weekly_profit, 2),
+                   "weeklyUnits": round(weekly_units, 4), "weeklyCrafts": weekly_crafts,
+                   "weeklyMaterialCost": round(weekly_material_cost, 2),
+                   "ingredientCoverageCrafts": ingredient_depth_crafts or 0,
+                   "listingFactor": listing_factor,
                    "riskProfit": round(risk_profit, 2), "clearDays": round(clear_days, 4) if clear_days else None,
                    "stableEligible": metric["units"] >= 20 and metric["saleRatio"] >= .30,
                    "grossEligible": metric["units"] >= 5 and metric["saleRatio"] >= .10,
