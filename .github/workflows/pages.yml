@@ -26,6 +26,8 @@ jobs:
           python-version: "3.12"
       - name: Analyze all Traditional Chinese worlds
         run: python scripts/update_market.py
+      - name: Analyze crafting profitability
+        run: python scripts/update_crafting.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
