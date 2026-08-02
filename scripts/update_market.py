@@ -97,7 +97,7 @@ def build_world(world_id: int, world_name: str, catalog: list[dict]):
                      "lowest": lowest, "stock": stock, "stockDays": round(stock / daily, 4) if daily else None})
 
     payload = {"world": world_id, "worldName": world_name, "generatedAt": datetime.now(timezone.utc).isoformat(),
-               "windowDays": WINDOW_DAYS, "quality": "NQ", "rows": rows}
+               "windowDays": WINDOW_DAYS, "quality": "NQ", "dataAvailable": bool(rows), "rows": rows}
     output = ROOT / "public" / "data" / f"world-{world_id}.json"
     output.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"  {world_name}: wrote {len(rows)} qualified rows", flush=True)
