@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>雇員雷達｜FFXIV 繁中服</title>
-  <meta name="description" content="每 12 小時更新的雇員採集與生產職業市場收益排行">
+  <meta name="description" content="每小時整點更新的 FFXIV 繁中服雇員採集與生產職業市場收益排行">
   <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 <header class="hero">
-  <nav><span class="brandMark">R</span><div class="radar-nav" id="sections"><button class="active" data-section="retainer">雇員雷達</button><button data-section="craft">生產雷達</button></div><em class="server-badge">繁中服</em><div class="pulse"><i></i>每 12 小時更新</div></nav>
+  <nav><span class="brandMark">R</span><div class="radar-nav" id="sections"><button class="active" data-section="retainer">雇員雷達</button><button data-section="craft">生產雷達</button></div><em class="server-badge">繁中服</em><em class="version-badge">PATCH 7.2</em><div class="pulse"><i></i>每小時整點更新</div></nav>
   <section class="controls">
     <label>交易世界<select id="world"></select></label>
     <label id="gather-control">獲得力<input id="gathering" type="number" value="3681"><small>決定能否派遣該採集物品</small></label>
@@ -26,7 +26,7 @@
     <article class="winner"><div class="rank">今日首選<b>01</b></div><img id="winner-icon" class="winner-icon" alt=""><div class="winner-name"><span id="winner-job"></span><h2 id="winner-name"></h2><p id="winner-detail"></p></div><div class="winner-stats"><div><span id="winner-gross-label">每趟毛收益</span><b id="winner-gross"></b></div><div><span id="winner-risk-label">風險調整收益</span><b id="winner-risk"></b></div></div></article>
     <div class="table-wrap"><table><thead id="table-head"></thead><tbody id="ranking"></tbody></table></div>
   </section>
-  <footer><div><b>計算方式</b><p id="formula"></p><small>非 Square Enix 官方網站。資料來源：Universalis。</small></div><div class="updated"><span>資料產生時間</span><b id="updated">—</b><small>GitHub Actions · 每 12 小時</small><div class="author">作者　遊戲名稱：李東海<br>伺服器：伊弗利特</div></div></footer>
+  <footer><div><b>計算方式</b><p id="formula"></p><small>非 Square Enix 官方網站。資料來源：Universalis。</small></div><div class="updated"><span>資料產生時間</span><b id="updated">—</b><small>GitHub Actions · 每小時整點更新</small><div class="author">作者　遊戲名稱：李東海<br>伺服器：伊弗利特</div></div></footer>
 </main>
 <script src="app.js?v=7"></script>
 </body></html>
