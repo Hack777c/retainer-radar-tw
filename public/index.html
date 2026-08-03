@@ -5,13 +5,14 @@
   <title>雇員雷達｜FFXIV 繁中服</title>
   <meta name="description" content="每小時整點更新的 FFXIV 繁中服雇員採集與生產職業市場收益排行">
   <link rel="icon" type="image/png" href="assets/ffxiv-mark.png">
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=13">
 </head>
 <body>
 <header class="hero">
   <nav><span class="brandMark" title="FFXIV 雷達">R</span><div class="radar-nav" id="sections"><button class="active" data-section="retainer">雇員雷達</button><button data-section="craft">生產雷達</button></div><em class="server-badge">繁中服</em><div class="pulse"><div><i></i><span id="update-countdown">更新倒數 --:--:--</span></div><small>版本：7.2</small></div></nav>
   <section class="controls">
     <label>交易世界<select id="world"></select></label>
+    <label id="dispatch-control">每日總派遣趟數<input id="dispatches" type="number" min="1" max="24" value="6"><small>同類雇員合計；兩名各收 6 次請填 12</small></label>
     <label id="gather-control">獲得力<input id="gathering" type="number" value="3681"><small>決定能否派遣該採集物品</small></label>
     <label id="stat-control"><span id="stat-label">鑑別力</span><input id="stat" type="number" value="2987"><small id="stat-help">決定每趟實際帶回數量</small></label>
     <label id="level-control" hidden>最高配方等級<input id="craft-level" type="number" min="1" max="100" value="100"><small>分析 Lv1–100，包含所有秘笈配方</small></label>
@@ -29,5 +30,5 @@
   </section>
   <footer><div><b>計算方式</b><p id="formula"></p><small>非 Square Enix 官方網站。資料來源：Universalis。</small></div><div class="updated"><span>資料產生時間</span><b id="updated">—</b><small>GitHub Actions · 每小時整點更新</small><div class="author">作者　遊戲名稱：李東海<br>伺服器：伊弗利特</div></div></footer>
 </main>
-<script src="app.js?v=10"></script>
+<script src="app.js?v=11"></script>
 </body></html>
